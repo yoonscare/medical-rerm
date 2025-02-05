@@ -29,10 +29,9 @@ st.markdown("""
         color: white;
         font-weight: bold;
     }
-    /* 카드 배경색이 밝으므로, 글자색을 검정으로 명시 */
     .term-card {
         background: #f8f9fa;
-        color: #000;  /* 추가: 글자색을 검정으로 지정 */
+        color: #000;  /* 글자색 검정으로 지정 */
         padding: 1.5rem;
         border-radius: 15px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -334,7 +333,7 @@ if selected == list(menu_options.keys())[0]:  # "오늘의 학습"
     # 남은 용어가 6개 미만이면 전체에서 다시 뽑도록 처리
     today_terms = random.sample(remaining_terms if len(remaining_terms) >= 6 else medical_terms, 6)
 
-    # 용어 카드 표시
+    # 용어 카드 표시 (영어+한글 해석, 볼드체)
     cols = st.columns(3)
     for idx, term in enumerate(today_terms):
         with cols[idx % 3]:
@@ -342,8 +341,8 @@ if selected == list(menu_options.keys())[0]:  # "오늘의 학습"
             with st.container():
                 st.markdown(f"""
                 <div class="term-card">
-                    <h3>{term['term']}</h3>
-                    <p>{term['definition']}</p>
+                    <p style="font-weight:bold; font-size:1.1rem;">{term['term']}</p>
+                    <p style="font-weight:bold; font-size:1rem;">{term['definition']}</p>
                 </div>
                 """, unsafe_allow_html=True)
                 if st.button("완료", key=card_key):
