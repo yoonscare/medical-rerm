@@ -3,15 +3,51 @@ from datetime import datetime, timedelta
 import pandas as pd
 import json
 import plotly.graph_objects as go
-from streamlit_calendar import calendar
 from streamlit_option_menu import option_menu
 from streamlit_extras.card import card
 import random
 
-# ... (이전 코드와 동일한 페이지 설정 및 CSS)
+# 페이지 설정
+st.set_page_config(
+    page_title="의학 용어 학습",
+    page_icon="🏥",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# 확장된 의학 용어 데이터베이스
-medical_terms = {
+# CSS 스타일 적용
+st.markdown("""
+    <style>
+    .main {
+        padding: 2rem;
+    }
+    .stButton > button {
+        width: 100%;
+        border-radius: 20px;
+        height: 3rem;
+        background: linear-gradient(45deg, #4F46E5, #7C3AED);
+        color: white;
+        font-weight: bold;
+    }
+    .term-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 1rem;
+    }
+    .stats-card {
+        background: linear-gradient(45deg, #4F46E5, #7C3AED);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 1rem;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# 의학 용어 데이터베이스
+nested_terms = {
     "기초 의학": {
         "해부학": [
             {"term": "Cerebrum", "definition": "대뇌"},
@@ -112,41 +148,71 @@ medical_terms = {
             {"term": "Blood Glucose", "definition": "혈당"},
             {"term": "Blood Urea Nitrogen", "definition": "혈중요소질소"},
             {"term": "Creatinine", "definition": "크레아티닌"}
+        ],
+        "영상검사": [
+            {"term": "X-ray", "definition": "엑스레이"},
+            {"term": "CT Scan", "definition": "전산화단층촬영"},
+            {"term": "MRI", "definition": "자기공명영상"},
+            {"term": "Ultrasound", "definition": "초음파"},
+            {"term": "PET Scan", "definition": "양전자방출단층촬영"},
+            {"term": "Angiography", "definition": "혈관조영술"},
+            {"term": "Mammography", "definition": "유방촬영술"},
+            {"term": "Fluoroscopy", "definition": "투시검사"},
+            {"term": "Bone Scan", "definition": "골스캔"},
+            {"term": "Echocardiogram", "definition": "심장초음파"}
         ]
     }
 }
 
-# ... (중간 코드 생략)
+# 중첩된 딕셔너리를 단일 리스트로 변환
+medical_terms = []
+for category in nested_terms.values():
+    for subcategory in category.values():
+        medical_terms.extend(subcategory)
 
-# 오늘의 학습 용어 선택 (6개)
-def get_daily_terms(date):
-    # 날짜를 시드로 사용하여 랜덤 선택
-    random.seed(int(date.strftime("%Y%m%d")))
+# 세션 상태 초기화
+if 'completed_terms' not in st.session_state:
+    st.session_state.completed_terms = []
+if 'monthly_completions' not in st.session_state:
+    st.session_state.monthly_completions = 0
+if 'all_time_completed' not in st.session_state:
+    st.session_state.all_time_completed = []
+
+# 사이드바 메뉴
+with st.sidebar:
+    menu_options = {
+        "오늘의 학습": "book",
+        "통계": "graph-up",
+        "상품 시스템": "gift"
+    }
+    selected = option_menu(
+        "학습 메뉴",
+        list(menu_options.keys()),
+        icons=list(menu_options.values()),
+        menu_icon="cast",
+        default_index=0,
+    )
+
+# 오늘의 학습 페이지
+if selected == list(menu_options.keys())[0]:  # "오늘의 학습"
+    st.title("🏥 오늘의 의학 용어")
     
-    # 모든 용어를 하나의 리스트로 통합
-    all_terms = []
-    for category in medical_terms.values():
-        for subcategory in category.values():
-            all_terms.extend(subcategory)
+    # 날짜 선택
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        selected_date = st.date_input("학습 날짜 선택", datetime.now())
     
-    # 이미 완료한 용어 제외
-    remaining_terms = [term for term in all_terms 
+    # 진행률 표시
+    progress = len(st.session_state.all_time_completed) / len(medical_terms)
+    st.progress(progress)
+    st.write(f"전체 진행률: {progress*100:.1f}% ({len(st.session_state.all_time_completed)}/{len(medical_terms)})")
+
+    # 오늘의 학습 용어 선택 (6개)
+    random.seed(int(selected_date.strftime("%Y%m%d")))
+    remaining_terms = [term for term in medical_terms 
                       if term not in st.session_state.all_time_completed]
-    
-    # 남은 용어가 6개 미만이면 전체 용어에서 다시 선택
-    if len(remaining_terms) < 6:
-        remaining_terms = all_terms
-    
-    # 6개 용어 랜덤 선택
-    return random.sample(remaining_terms, 6)
+    today_terms = random.sample(remaining_terms if len(remaining_terms) >= 6 else medical_terms, 6)
 
-# 메인 페이지에서 사용
-if selected == "오늘의 학습":
-    # ... (이전 코드와 동일)
-    
-    # 선택된 날짜의 용어 가져오기
-    today_terms = get_daily_terms(selected_date)
-    
     # 용어 카드 표시
     cols = st.columns(3)
     for idx, term in enumerate(today_terms):
@@ -167,9 +233,8 @@ if selected == "오늘의 학습":
                         st.success("잘 하셨습니다! 🎉")
                         st.balloons()
 
-# ... (나머지 코드는 이전과 동일)
-
-elif selected == "통계":
+# 통계 페이지
+elif selected == list(menu_options.keys())[1]:  # "통계"
     st.title("📊 학습 통계")
     
     # 월간 완료 통계
@@ -192,7 +257,15 @@ elif selected == "통계":
     
     st.plotly_chart(fig, use_container_width=True)
 
-elif selected == "상품 시스템":
+    # 전체 진행 현황
+    st.subheader("전체 진행 현황")
+    total_progress = len(st.session_state.all_time_completed)
+    total_terms = len(medical_terms)
+    st.metric("학습한 용어 수", f"{total_progress}/{total_terms}", 
+              f"{(total_progress/total_terms*100):.1f}%")
+
+# 상품 시스템 페이지
+elif selected == list(menu_options.keys())[2]:  # "상품 시스템"
     st.title("🎁 상품 시스템")
     
     rewards = {
@@ -204,21 +277,34 @@ elif selected == "상품 시스템":
     }
     
     for count, reward in rewards.items():
-        if st.session_state.monthly_completions >= count:
-            st.markdown(f"""
-            <div class="stats-card">
-                <h3>{count}회 완료 - {reward}</h3>
-                <p>획득 완료! 🎉</p>
-            </div>
-            """, unsafe_allow_html=True)
-        else:
-            st.markdown(f"""
-            <div class="term-card">
-                <h3>{count}회 완료 - {reward}</h3>
-                <p>아직 획득하지 못했습니다</p>
-            </div>
-            """, unsafe_allow_html=True)
+        achieved = st.session_state.monthly_completions >= count
+        container_class = "stats-card" if achieved else "term-card"
+        status_text = "획득 완료! 🎉" if achieved else "아직 획득하지 못했습니다"
+        
+        st.markdown(f"""
+        <div class="{container_class}">
+            <h3>{count}회 완료 - {reward}</h3>
+            <p>{status_text}</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # 현재 달성 현황
+    current_completions = st.session_state.monthly_completions
+    next_reward = next((count for count in sorted(rewards.keys()) 
+                       if count > current_completions), None)
+    if next_reward:
+        remaining = next_reward - current_completions
+        st.info(f"다음 상품까지 {remaining}회 남았습니다! 화이팅! 💪")
 
 # 하단 정보
 st.markdown("---")
 st.markdown("Made with ❤️ for Medical Students")
+
+# 모든 용어를 학습 완료했을 때 초기화 버튼
+if len(st.session_state.all_time_completed) == len(medical_terms):
+    st.success("🎓 축하합니다! 모든 의학 용어를 학습하셨습니다!")
+    if st.button("처음부터 다시 시작하기"):
+        st.session_state.all_time_completed = []
+        st.session_state.completed_terms = []
+        st.session_state.monthly_completions = 0
+        st.experimental_rerun()
