@@ -29,8 +29,10 @@ st.markdown("""
         color: white;
         font-weight: bold;
     }
+    /* 카드 배경색이 밝으므로, 글자색을 검정으로 명시 */
     .term-card {
-        background: #f8f9fa;  /* 연한 회색으로 변경 */
+        background: #f8f9fa;
+        color: #000;  /* 추가: 글자색을 검정으로 지정 */
         padding: 1.5rem;
         border-radius: 15px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
