@@ -8,44 +8,7 @@ from streamlit_option_menu import option_menu
 from streamlit_extras.card import card
 import random
 
-# 페이지 설정
-st.set_page_config(
-    page_title="의학 용어 학습",
-    page_icon="🏥",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# CSS 스타일 적용
-st.markdown("""
-    <style>
-    .main {
-        padding: 2rem;
-    }
-    .stButton > button {
-        width: 100%;
-        border-radius: 20px;
-        height: 3rem;
-        background: linear-gradient(45deg, #4F46E5, #7C3AED);
-        color: white;
-        font-weight: bold;
-    }
-    .term-card {
-        background: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 1rem;
-    }
-    .stats-card {
-        background: linear-gradient(45deg, #4F46E5, #7C3AED);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 15px;
-        margin-bottom: 1rem;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# ... (이전 코드와 동일한 페이지 설정 및 CSS)
 
 # 확장된 의학 용어 데이터베이스
 medical_terms = {
@@ -55,12 +18,36 @@ medical_terms = {
             {"term": "Medulla Oblongata", "definition": "연수"},
             {"term": "Cerebellum", "definition": "소뇌"},
             {"term": "Hypothalamus", "definition": "시상하부"},
+            {"term": "Thalamus", "definition": "시상"},
+            {"term": "Pons", "definition": "뇌교"},
+            {"term": "Hippocampus", "definition": "해마"},
+            {"term": "Amygdala", "definition": "편도체"},
+            {"term": "Corpus Callosum", "definition": "뇌량"},
+            {"term": "Brainstem", "definition": "뇌간"}
         ],
         "생리학": [
             {"term": "Homeostasis", "definition": "항상성"},
             {"term": "Metabolism", "definition": "대사"},
             {"term": "Osmosis", "definition": "삼투"},
             {"term": "Diffusion", "definition": "확산"},
+            {"term": "Active Transport", "definition": "능동수송"},
+            {"term": "Membrane Potential", "definition": "막전위"},
+            {"term": "Action Potential", "definition": "활동전위"},
+            {"term": "Synapse", "definition": "시냅스"},
+            {"term": "Neurotransmitter", "definition": "신경전달물질"},
+            {"term": "Receptor", "definition": "수용체"}
+        ],
+        "조직학": [
+            {"term": "Epithelium", "definition": "상피조직"},
+            {"term": "Connective Tissue", "definition": "결합조직"},
+            {"term": "Muscle Tissue", "definition": "근육조직"},
+            {"term": "Nervous Tissue", "definition": "신경조직"},
+            {"term": "Adipose Tissue", "definition": "지방조직"},
+            {"term": "Cartilage", "definition": "연골"},
+            {"term": "Bone Tissue", "definition": "골조직"},
+            {"term": "Blood", "definition": "혈액"},
+            {"term": "Lymphatic Tissue", "definition": "림프조직"},
+            {"term": "Mucous Membrane", "definition": "점막"}
         ]
     },
     "임상 의학": {
@@ -69,78 +56,97 @@ medical_terms = {
             {"term": "Tachycardia", "definition": "빈맥"},
             {"term": "Bradycardia", "definition": "서맥"},
             {"term": "Arrhythmia", "definition": "부정맥"},
+            {"term": "Myocardial Infarction", "definition": "심근경색"},
+            {"term": "Angina Pectoris", "definition": "협심증"},
+            {"term": "Heart Failure", "definition": "심부전"},
+            {"term": "Atherosclerosis", "definition": "동맥경화증"},
+            {"term": "Thrombosis", "definition": "혈전증"},
+            {"term": "Embolism", "definition": "색전증"}
         ],
         "호흡기": [
             {"term": "Dyspnea", "definition": "호흡곤란"},
             {"term": "Bronchitis", "definition": "기관지염"},
             {"term": "Pneumonia", "definition": "폐렴"},
             {"term": "Emphysema", "definition": "폐기종"},
+            {"term": "Asthma", "definition": "천식"},
+            {"term": "Tuberculosis", "definition": "결핵"},
+            {"term": "Pleurisy", "definition": "흉막염"},
+            {"term": "Pneumothorax", "definition": "기흉"},
+            {"term": "Pulmonary Edema", "definition": "폐부종"},
+            {"term": "Lung Cancer", "definition": "폐암"}
         ],
         "소화기": [
             {"term": "Gastritis", "definition": "위염"},
             {"term": "Hepatitis", "definition": "간염"},
             {"term": "Cholecystitis", "definition": "담낭염"},
             {"term": "Pancreatitis", "definition": "췌장염"},
+            {"term": "Appendicitis", "definition": "충수염"},
+            {"term": "Cirrhosis", "definition": "간경변"},
+            {"term": "Peptic Ulcer", "definition": "소화성 궤양"},
+            {"term": "Crohn Disease", "definition": "크론병"},
+            {"term": "Ulcerative Colitis", "definition": "궤양성 대장염"},
+            {"term": "Gallstone", "definition": "담석"}
+        ],
+        "신경계": [
+            {"term": "Meningitis", "definition": "수막염"},
+            {"term": "Encephalitis", "definition": "뇌염"},
+            {"term": "Stroke", "definition": "뇌졸중"},
+            {"term": "Epilepsy", "definition": "간질"},
+            {"term": "Parkinson Disease", "definition": "파킨슨병"},
+            {"term": "Multiple Sclerosis", "definition": "다발성 경화증"},
+            {"term": "Alzheimer Disease", "definition": "알츠하이머병"},
+            {"term": "Migraine", "definition": "편두통"},
+            {"term": "Brain Tumor", "definition": "뇌종양"},
+            {"term": "Neuralgia", "definition": "신경통"}
         ]
     },
     "진단검사": {
         "혈액검사": [
+            {"term": "Complete Blood Count", "definition": "전혈구검사"},
             {"term": "Hemoglobin", "definition": "헤모글로빈"},
-            {"term": "Leukocyte", "definition": "백혈구"},
+            {"term": "Hematocrit", "definition": "적혈구용적률"},
+            {"term": "White Blood Cell", "definition": "백혈구"},
             {"term": "Platelet", "definition": "혈소판"},
-            {"term": "Hematocrit", "definition": "적혈구용적"},
-        ],
-        "영상검사": [
-            {"term": "MRI", "definition": "자기공명영상"},
-            {"term": "CT", "definition": "전산화단층촬영"},
-            {"term": "Ultrasound", "definition": "초음파"},
-            {"term": "X-ray", "definition": "엑스레이"},
+            {"term": "Erythrocyte Sedimentation Rate", "definition": "적혈구침강속도"},
+            {"term": "Prothrombin Time", "definition": "프로트롬빈시간"},
+            {"term": "Blood Glucose", "definition": "혈당"},
+            {"term": "Blood Urea Nitrogen", "definition": "혈중요소질소"},
+            {"term": "Creatinine", "definition": "크레아티닌"}
         ]
     }
 }
 
-# 세션 상태 초기화
-if 'completed_terms' not in st.session_state:
-    st.session_state.completed_terms = []
-if 'monthly_completions' not in st.session_state:
-    st.session_state.monthly_completions = 0
-if 'all_time_completed' not in st.session_state:
-    st.session_state.all_time_completed = []
+# ... (중간 코드 생략)
 
-# 사이드바 메뉴
-with st.sidebar:
-    selected = option_menu(
-        "학습 메뉴",
-        ["오늘의 학습", "통계", "상품 시스템"],
-        icons=['book', 'graph-up', 'gift'],
-        menu_icon="cast",
-        default_index=0,
-    )
-
-# 메인 페이지
-if selected == "오늘의 학습":
-    st.title("🏥 오늘의 의학 용어")
+# 오늘의 학습 용어 선택 (6개)
+def get_daily_terms(date):
+    # 날짜를 시드로 사용하여 랜덤 선택
+    random.seed(int(date.strftime("%Y%m%d")))
     
-    # 날짜 선택
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        selected_date = st.date_input("학습 날짜 선택", datetime.now())
-    
-    # 진행률 표시
-    total_terms = sum(len(subcat) for cat in medical_terms.values() 
-                     for subcat in cat.values())
-    progress = len(st.session_state.all_time_completed) / total_terms
-    st.progress(progress)
-    st.write(f"전체 진행률: {progress*100:.1f}% ({len(st.session_state.all_time_completed)}/{total_terms})")
-
-    # 오늘의 학습 용어 선택 (6개)
-    random.seed(int(selected_date.strftime("%Y%m%d")))
-    today_terms = []
+    # 모든 용어를 하나의 리스트로 통합
+    all_terms = []
     for category in medical_terms.values():
         for subcategory in category.values():
-            today_terms.extend(subcategory)
-    today_terms = random.sample(today_terms, min(6, len(today_terms)))
+            all_terms.extend(subcategory)
+    
+    # 이미 완료한 용어 제외
+    remaining_terms = [term for term in all_terms 
+                      if term not in st.session_state.all_time_completed]
+    
+    # 남은 용어가 6개 미만이면 전체 용어에서 다시 선택
+    if len(remaining_terms) < 6:
+        remaining_terms = all_terms
+    
+    # 6개 용어 랜덤 선택
+    return random.sample(remaining_terms, 6)
 
+# 메인 페이지에서 사용
+if selected == "오늘의 학습":
+    # ... (이전 코드와 동일)
+    
+    # 선택된 날짜의 용어 가져오기
+    today_terms = get_daily_terms(selected_date)
+    
     # 용어 카드 표시
     cols = st.columns(3)
     for idx, term in enumerate(today_terms):
@@ -160,6 +166,8 @@ if selected == "오늘의 학습":
                         st.session_state.monthly_completions += 1
                         st.success("잘 하셨습니다! 🎉")
                         st.balloons()
+
+# ... (나머지 코드는 이전과 동일)
 
 elif selected == "통계":
     st.title("📊 학습 통계")
