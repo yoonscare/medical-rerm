@@ -30,12 +30,15 @@ st.markdown("""
         font-weight: bold;
     }
     .term-card {
-        background: white;
+        background: #f8f9fa;  /* 연한 회색으로 변경 */
         padding: 1.5rem;
         border-radius: 15px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         margin-bottom: 1rem;
     }
+    </style>
+    """, unsafe_allow_html=True)
+
     .stats-card {
         background: linear-gradient(45deg, #4F46E5, #7C3AED);
         color: white;
@@ -123,43 +126,82 @@ nested_terms = {
             {"term": "Ulcerative Colitis", "definition": "궤양성 대장염"},
             {"term": "Gallstone", "definition": "담석"}
         ],
-        "신경계": [
+        "신경계": {
+        "두뇌": [
+            {"term": "Anencephaly", "definition": "무뇌증"},
+            {"term": "Cerebral Palsy", "definition": "뇌성마비"},
             {"term": "Meningitis", "definition": "수막염"},
-            {"term": "Encephalitis", "definition": "뇌염"},
-            {"term": "Stroke", "definition": "뇌졸중"},
-            {"term": "Epilepsy", "definition": "간질"},
-            {"term": "Parkinson Disease", "definition": "파킨슨병"},
-            {"term": "Multiple Sclerosis", "definition": "다발성 경화증"},
-            {"term": "Alzheimer Disease", "definition": "알츠하이머병"},
-            {"term": "Migraine", "definition": "편두통"},
             {"term": "Brain Tumor", "definition": "뇌종양"},
-            {"term": "Neuralgia", "definition": "신경통"}
+            {"term": "Epilepsy", "definition": "간질"},
+            {"term": "Encephalitis", "definition": "뇌염"},
+            {"term": "Hydrocephalus", "definition": "수두증"},
+            {"term": "Cerebral Hemorrhage", "definition": "뇌출혈"},
+            {"term": "Multiple Sclerosis", "definition": "다발성 경화증"},
+            {"term": "Brain Abscess", "definition": "뇌농양"}
+        ],
+        "증상": [
+            {"term": "Aphasia", "definition": "실어증"},
+            {"term": "Apraxia", "definition": "실행증"},
+            {"term": "Ataxia", "definition": "운동실조"},
+            {"term": "Convulsion", "definition": "경련"},
+            {"term": "Dizziness", "definition": "어지러움"},
+            {"term": "Vertigo", "definition": "현기증"},
+            {"term": "Coma", "definition": "혼수"},
+            {"term": "Syncope", "definition": "실신"},
+            {"term": "Neuralgia", "definition": "신경통"},
+            {"term": "Paralysis", "definition": "마비"}
         ]
     },
-    "진단검사": {
-        "혈액검사": [
-            {"term": "Complete Blood Count", "definition": "전혈구검사"},
-            {"term": "Hemoglobin", "definition": "헤모글로빈"},
-            {"term": "Hematocrit", "definition": "적혈구용적률"},
-            {"term": "White Blood Cell", "definition": "백혈구"},
-            {"term": "Platelet", "definition": "혈소판"},
-            {"term": "Erythrocyte Sedimentation Rate", "definition": "적혈구침강속도"},
-            {"term": "Prothrombin Time", "definition": "프로트롬빈시간"},
-            {"term": "Blood Glucose", "definition": "혈당"},
-            {"term": "Blood Urea Nitrogen", "definition": "혈중요소질소"},
-            {"term": "Creatinine", "definition": "크레아티닌"}
+    "이비인후과": {
+        "귀": [
+            {"term": "Otitis Media", "definition": "중이염"},
+            {"term": "Tinnitus", "definition": "이명"},
+            {"term": "Deafness", "definition": "난청"},
+            {"term": "Labyrinthitis", "definition": "미로염"},
+            {"term": "Acoustic Neuroma", "definition": "청신경종양"},
+            {"term": "Otosclerosis", "definition": "이경화증"},
+            {"term": "Vestibular Neuritis", "definition": "전정신경염"},
+            {"term": "Meniere Disease", "definition": "메니에르병"},
+            {"term": "Cochlear Implant", "definition": "인공와우"},
+            {"term": "Presbycusis", "definition": "노인성난청"}
         ],
-        "영상검사": [
-            {"term": "X-ray", "definition": "엑스레이"},
-            {"term": "CT Scan", "definition": "전산화단층촬영"},
-            {"term": "MRI", "definition": "자기공명영상"},
-            {"term": "Ultrasound", "definition": "초음파"},
-            {"term": "PET Scan", "definition": "양전자방출단층촬영"},
-            {"term": "Angiography", "definition": "혈관조영술"},
-            {"term": "Mammography", "definition": "유방촬영술"},
-            {"term": "Fluoroscopy", "definition": "투시검사"},
-            {"term": "Bone Scan", "definition": "골스캔"},
-            {"term": "Echocardiogram", "definition": "심장초음파"}
+        "코": [
+            {"term": "Rhinitis", "definition": "비염"},
+            {"term": "Sinusitis", "definition": "부비동염"},
+            {"term": "Epistaxis", "definition": "비출혈"},
+            {"term": "Nasal Polyp", "definition": "비강폴립"},
+            {"term": "Deviated Septum", "definition": "비중격만곡증"},
+            {"term": "Anosmia", "definition": "후각상실"},
+            {"term": "Rhinorrhea", "definition": "콧물"},
+            {"term": "Nasal Obstruction", "definition": "비강폐쇄"},
+            {"term": "Allergic Rhinitis", "definition": "알레르기성 비염"},
+            {"term": "Nasal Trauma", "definition": "비부외상"}
+        ]
+    },
+    "비뇨기과": {
+        "신장": [
+            {"term": "Nephritis", "definition": "신장염"},
+            {"term": "Renal Failure", "definition": "신부전"},
+            {"term": "Nephrotic Syndrome", "definition": "신증후군"},
+            {"term": "Pyelonephritis", "definition": "신우신염"},
+            {"term": "Hydronephrosis", "definition": "수신증"},
+            {"term": "Renal Cyst", "definition": "신낭종"},
+            {"term": "Glomerulonephritis", "definition": "사구체신염"},
+            {"term": "Kidney Stone", "definition": "신장결석"},
+            {"term": "Renal Cancer", "definition": "신장암"},
+            {"term": "Polycystic Kidney", "definition": "다낭성신장"}
+        ],
+        "방광": [
+            {"term": "Cystitis", "definition": "방광염"},
+            {"term": "Urinary Retention", "definition": "요저류"},
+            {"term": "Incontinence", "definition": "요실금"},
+            {"term": "Bladder Cancer", "definition": "방광암"},
+            {"term": "Overactive Bladder", "definition": "과민성방광"},
+            {"term": "Neurogenic Bladder", "definition": "신경인성방광"},
+            {"term": "Urethritis", "definition": "요도염"},
+            {"term": "Urinary Tract Infection", "definition": "요로감염"},
+            {"term": "Bladder Stone", "definition": "방광결석"},
+            {"term": "Interstitial Cystitis", "definition": "간질성방광염"}
         ]
     }
 }
