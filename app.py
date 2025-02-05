@@ -1,7 +1,6 @@
 import streamlit as st
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
-import json
 import plotly.graph_objects as go
 from streamlit_option_menu import option_menu
 from streamlit_extras.card import card
@@ -290,12 +289,15 @@ def flatten_terms(nested_dict):
 medical_terms = flatten_terms(nested_terms)
 
 # 세션 상태 초기화
-if 'completed_terms' not in st.session_state:
+if "completed_terms" not in st.session_state:
     st.session_state.completed_terms = []
-if 'monthly_completions' not in st.session_state:
+if "monthly_completions" not in st.session_state:
     st.session_state.monthly_completions = 0
-if 'all_time_completed' not in st.session_state:
+if "all_time_completed" not in st.session_state:
     st.session_state.all_time_completed = []
+# 날짜별로 뽑힌 6개 용어 저장용(딕셔너리: {날짜(str): [용어6개]})
+if "daily_terms" not in st.session_state:
+    st.session_state.daily_terms = {}
 
 # 사이드바 메뉴
 with st.sidebar:
@@ -321,37 +323,56 @@ if selected == list(menu_options.keys())[0]:  # "오늘의 학습"
     with col1:
         selected_date = st.date_input("학습 날짜 선택", datetime.now())
     
+    # 문자열 형태로 키를 사용(날짜별)
+    date_key = selected_date.strftime("%Y-%m-%d")
+
+    # date_key에 해당하는 6개 용어가 없다면 새로 뽑음
+    if date_key not in st.session_state.daily_terms:
+        # 남아있는 용어 중 6개 또는 전체에서 재추출
+        remaining_terms = [term for term in medical_terms 
+                           if term not in st.session_state.all_time_completed]
+        if len(remaining_terms) < 6:
+            sample_pool = medical_terms  # 전체 중에서 추출
+        else:
+            sample_pool = remaining_terms
+        
+        # 오늘의 6개 용어 고정
+        st.session_state.daily_terms[date_key] = random.sample(sample_pool, 6)
+
+    # 오늘의 용어 가져오기
+    today_terms = st.session_state.daily_terms[date_key]
+
     # 전체 진행률 표시
     progress = len(st.session_state.all_time_completed) / len(medical_terms)
     st.progress(progress)
-    st.write(f"전체 진행률: {progress*100:.1f}% ({len(st.session_state.all_time_completed)}/{len(medical_terms)})")
+    st.write(
+        f"전체 진행률: {progress*100:.1f}% "
+        f"({len(st.session_state.all_time_completed)}/{len(medical_terms)})"
+    )
 
-    # 오늘의 학습 용어 선택 (6개)
-    random.seed(int(selected_date.strftime("%Y%m%d")))
-    remaining_terms = [term for term in medical_terms 
-                      if term not in st.session_state.all_time_completed]
-    # 남은 용어가 6개 미만이면 전체에서 다시 뽑도록 처리
-    today_terms = random.sample(remaining_terms if len(remaining_terms) >= 6 else medical_terms, 6)
-
-    # 용어 카드 표시 (영어+한글 해석, 볼드체)
+    # 카드 표시 (영어+한글, 굵게)
     cols = st.columns(3)
     for idx, term in enumerate(today_terms):
         with cols[idx % 3]:
-            card_key = f"term_card_{idx}"
-            with st.container():
-                st.markdown(f"""
-                <div class="term-card">
-                    <p style="font-weight:bold; font-size:1.1rem;">{term['term']}</p>
-                    <p style="font-weight:bold; font-size:1rem;">{term['definition']}</p>
-                </div>
-                """, unsafe_allow_html=True)
-                if st.button("완료", key=card_key):
-                    if term not in st.session_state.completed_terms:
-                        st.session_state.completed_terms.append(term)
-                        st.session_state.all_time_completed.append(term)
-                        st.session_state.monthly_completions += 1
-                        st.success("잘 하셨습니다! 🎉")
-                        st.balloons()
+            card_key = f"term_card_{date_key}_{idx}"
+            st.markdown(f"""
+            <div class="term-card">
+                <p style="font-weight:bold; font-size:1.1rem;">{term['term']}</p>
+                <p style="font-weight:bold; font-size:1rem;">{term['definition']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # 완료 버튼
+            if st.button("완료", key=card_key):
+                if term not in st.session_state.completed_terms:
+                    st.session_state.completed_terms.append(term)
+                if term not in st.session_state.all_time_completed:
+                    st.session_state.all_time_completed.append(term)
+                    st.session_state.monthly_completions += 1
+
+                st.success("잘 하셨습니다! 🎉")
+                # 풍선 대신 눈 이펙트 사용 (더 작아 글자 가림이 덜 함)
+                st.snow()
 
 # 통계 페이지
 elif selected == list(menu_options.keys())[1]:  # "통계"
@@ -413,8 +434,10 @@ elif selected == list(menu_options.keys())[2]:  # "상품 시스템"
 
     # 현재 달성 현황
     current_completions = st.session_state.monthly_completions
-    next_reward = next((count for count in sorted(rewards.keys()) 
-                       if count > current_completions), None)
+    next_reward = next(
+        (count for count in sorted(rewards.keys()) if count > current_completions),
+        None
+    )
     if next_reward:
         remaining = next_reward - current_completions
         st.info(f"다음 상품까지 {remaining}회 남았습니다! 화이팅! 💪")
@@ -423,11 +446,12 @@ elif selected == list(menu_options.keys())[2]:  # "상품 시스템"
 st.markdown("---")
 st.markdown("Made with ❤️ for Medical Students")
 
-# 모든 용어를 학습 완료했을 때 초기화 버튼
+# 모든 용어 학습 완료 시 초기화 버튼
 if len(st.session_state.all_time_completed) == len(medical_terms):
     st.success("🎓 축하합니다! 모든 의학 용어를 학습하셨습니다!")
     if st.button("처음부터 다시 시작하기"):
         st.session_state.all_time_completed = []
         st.session_state.completed_terms = []
         st.session_state.monthly_completions = 0
+        st.session_state.daily_terms = {}
         st.experimental_rerun()
