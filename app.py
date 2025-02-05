@@ -36,9 +36,6 @@ st.markdown("""
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         margin-bottom: 1rem;
     }
-    </style>
-    """, unsafe_allow_html=True)
-
     .stats-card {
         background: linear-gradient(45deg, #4F46E5, #7C3AED);
         color: white;
@@ -49,7 +46,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 의학 용어 데이터베이스
+# 의학 용어 데이터베이스 (총 180개)
 nested_terms = {
     "기초 의학": {
         "해부학": [
@@ -62,7 +59,13 @@ nested_terms = {
             {"term": "Hippocampus", "definition": "해마"},
             {"term": "Amygdala", "definition": "편도체"},
             {"term": "Corpus Callosum", "definition": "뇌량"},
-            {"term": "Brainstem", "definition": "뇌간"}
+            {"term": "Brainstem", "definition": "뇌간"},
+            # 추가 5개
+            {"term": "Frontal Lobe", "definition": "전두엽"},
+            {"term": "Parietal Lobe", "definition": "두정엽"},
+            {"term": "Temporal Lobe", "definition": "측두엽"},
+            {"term": "Occipital Lobe", "definition": "후두엽"},
+            {"term": "Basal Ganglia", "definition": "기저핵"}
         ],
         "생리학": [
             {"term": "Homeostasis", "definition": "항상성"},
@@ -74,7 +77,13 @@ nested_terms = {
             {"term": "Action Potential", "definition": "활동전위"},
             {"term": "Synapse", "definition": "시냅스"},
             {"term": "Neurotransmitter", "definition": "신경전달물질"},
-            {"term": "Receptor", "definition": "수용체"}
+            {"term": "Receptor", "definition": "수용체"},
+            # 추가 5개
+            {"term": "Hormone", "definition": "호르몬"},
+            {"term": "Enzyme", "definition": "효소"},
+            {"term": "pH Balance", "definition": "산-염기 균형"},
+            {"term": "Thermoregulation", "definition": "체온 조절"},
+            {"term": "Blood Pressure Regulation", "definition": "혈압 조절"}
         ],
         "조직학": [
             {"term": "Epithelium", "definition": "상피조직"},
@@ -86,7 +95,13 @@ nested_terms = {
             {"term": "Bone Tissue", "definition": "골조직"},
             {"term": "Blood", "definition": "혈액"},
             {"term": "Lymphatic Tissue", "definition": "림프조직"},
-            {"term": "Mucous Membrane", "definition": "점막"}
+            {"term": "Mucous Membrane", "definition": "점막"},
+            # 추가 5개
+            {"term": "Tendon", "definition": "힘줄"},
+            {"term": "Ligament", "definition": "인대"},
+            {"term": "Elastic Tissue", "definition": "탄력성 조직"},
+            {"term": "Reticular Tissue", "definition": "그물 조직"},
+            {"term": "Serous Membrane", "definition": "장막"}
         ]
     },
     "임상 의학": {
@@ -100,7 +115,13 @@ nested_terms = {
             {"term": "Heart Failure", "definition": "심부전"},
             {"term": "Atherosclerosis", "definition": "동맥경화증"},
             {"term": "Thrombosis", "definition": "혈전증"},
-            {"term": "Embolism", "definition": "색전증"}
+            {"term": "Embolism", "definition": "색전증"},
+            # 추가 5개
+            {"term": "Cardiac Output", "definition": "심박출량"},
+            {"term": "Cardiomyopathy", "definition": "심근병증"},
+            {"term": "Valvular Heart Disease", "definition": "심장판막질환"},
+            {"term": "Peripheral Vascular Disease", "definition": "말초혈관질환"},
+            {"term": "Stroke Volume", "definition": "일회박출량"}
         ],
         "호흡기": [
             {"term": "Dyspnea", "definition": "호흡곤란"},
@@ -112,7 +133,13 @@ nested_terms = {
             {"term": "Pleurisy", "definition": "흉막염"},
             {"term": "Pneumothorax", "definition": "기흉"},
             {"term": "Pulmonary Edema", "definition": "폐부종"},
-            {"term": "Lung Cancer", "definition": "폐암"}
+            {"term": "Lung Cancer", "definition": "폐암"},
+            # 추가 5개
+            {"term": "Chronic Bronchitis", "definition": "만성 기관지염"},
+            {"term": "Laryngitis", "definition": "후두염"},
+            {"term": "Bronchiectasis", "definition": "기관지확장증"},
+            {"term": "Pulmonary Fibrosis", "definition": "폐섬유화증"},
+            {"term": "Respiratory Distress Syndrome", "definition": "호흡곤란 증후군"}
         ],
         "소화기": [
             {"term": "Gastritis", "definition": "위염"},
@@ -124,33 +151,52 @@ nested_terms = {
             {"term": "Peptic Ulcer", "definition": "소화성 궤양"},
             {"term": "Crohn Disease", "definition": "크론병"},
             {"term": "Ulcerative Colitis", "definition": "궤양성 대장염"},
-            {"term": "Gallstone", "definition": "담석"}
+            {"term": "Gallstone", "definition": "담석"},
+            # 추가 5개
+            {"term": "Gastroparesis", "definition": "위마비"},
+            {"term": "Esophagitis", "definition": "식도염"},
+            {"term": "Diverticulitis", "definition": "게실염"},
+            {"term": "Gastroenteritis", "definition": "위장염"},
+            {"term": "Hemorrhoids", "definition": "치질(치핵)"}
         ],
         "신경계": {
-        "두뇌": [
-            {"term": "Anencephaly", "definition": "무뇌증"},
-            {"term": "Cerebral Palsy", "definition": "뇌성마비"},
-            {"term": "Meningitis", "definition": "수막염"},
-            {"term": "Brain Tumor", "definition": "뇌종양"},
-            {"term": "Epilepsy", "definition": "간질"},
-            {"term": "Encephalitis", "definition": "뇌염"},
-            {"term": "Hydrocephalus", "definition": "수두증"},
-            {"term": "Cerebral Hemorrhage", "definition": "뇌출혈"},
-            {"term": "Multiple Sclerosis", "definition": "다발성 경화증"},
-            {"term": "Brain Abscess", "definition": "뇌농양"}
-        ],
-        "증상": [
-            {"term": "Aphasia", "definition": "실어증"},
-            {"term": "Apraxia", "definition": "실행증"},
-            {"term": "Ataxia", "definition": "운동실조"},
-            {"term": "Convulsion", "definition": "경련"},
-            {"term": "Dizziness", "definition": "어지러움"},
-            {"term": "Vertigo", "definition": "현기증"},
-            {"term": "Coma", "definition": "혼수"},
-            {"term": "Syncope", "definition": "실신"},
-            {"term": "Neuralgia", "definition": "신경통"},
-            {"term": "Paralysis", "definition": "마비"}
-        ]
+            "두뇌": [
+                {"term": "Anencephaly", "definition": "무뇌증"},
+                {"term": "Cerebral Palsy", "definition": "뇌성마비"},
+                {"term": "Meningitis", "definition": "수막염"},
+                {"term": "Brain Tumor", "definition": "뇌종양"},
+                {"term": "Epilepsy", "definition": "간질"},
+                {"term": "Encephalitis", "definition": "뇌염"},
+                {"term": "Hydrocephalus", "definition": "수두증"},
+                {"term": "Cerebral Hemorrhage", "definition": "뇌출혈"},
+                {"term": "Multiple Sclerosis", "definition": "다발성 경화증"},
+                {"term": "Brain Abscess", "definition": "뇌농양"},
+                # 추가 5개
+                {"term": "Parkinson's Disease", "definition": "파킨슨병"},
+                {"term": "Alzheimer's Disease", "definition": "알츠하이머병"},
+                {"term": "Subdural Hematoma", "definition": "경막하 혈종"},
+                {"term": "Concussion", "definition": "뇌진탕"},
+                {"term": "Transient Ischemic Attack", "definition": "일과성 허혈 발작"}
+            ],
+            "증상": [
+                {"term": "Aphasia", "definition": "실어증"},
+                {"term": "Apraxia", "definition": "실행증"},
+                {"term": "Ataxia", "definition": "운동실조"},
+                {"term": "Convulsion", "definition": "경련"},
+                {"term": "Dizziness", "definition": "어지러움"},
+                {"term": "Vertigo", "definition": "현기증"},
+                {"term": "Coma", "definition": "혼수"},
+                {"term": "Syncope", "definition": "실신"},
+                {"term": "Neuralgia", "definition": "신경통"},
+                {"term": "Paralysis", "definition": "마비"},
+                # 추가 5개
+                {"term": "Headache", "definition": "두통"},
+                {"term": "Insomnia", "definition": "불면증"},
+                {"term": "Neurogenic Shock", "definition": "신경인성 쇼크"},
+                {"term": "Spasm", "definition": "근육 경련"},
+                {"term": "Paresthesia", "definition": "감각 이상"}
+            ]
+        }
     },
     "이비인후과": {
         "귀": [
@@ -163,7 +209,13 @@ nested_terms = {
             {"term": "Vestibular Neuritis", "definition": "전정신경염"},
             {"term": "Meniere Disease", "definition": "메니에르병"},
             {"term": "Cochlear Implant", "definition": "인공와우"},
-            {"term": "Presbycusis", "definition": "노인성난청"}
+            {"term": "Presbycusis", "definition": "노인성난청"},
+            # 추가 5개
+            {"term": "Ear Barotrauma", "definition": "이압손상"},
+            {"term": "Cholesteatoma", "definition": "진주종"},
+            {"term": "Otorrhea", "definition": "이루(귀액)"},
+            {"term": "Otalgia", "definition": "이통(귀 통증)"},
+            {"term": "Perforated Eardrum", "definition": "고막 천공"}
         ],
         "코": [
             {"term": "Rhinitis", "definition": "비염"},
@@ -175,7 +227,13 @@ nested_terms = {
             {"term": "Rhinorrhea", "definition": "콧물"},
             {"term": "Nasal Obstruction", "definition": "비강폐쇄"},
             {"term": "Allergic Rhinitis", "definition": "알레르기성 비염"},
-            {"term": "Nasal Trauma", "definition": "비부외상"}
+            {"term": "Nasal Trauma", "definition": "비부외상"},
+            # 추가 5개
+            {"term": "Nasopharyngitis", "definition": "비인두염"},
+            {"term": "Rhinosinusitis", "definition": "비부비동염"},
+            {"term": "Hyposmia", "definition": "후각저하"},
+            {"term": "Turbinate Hypertrophy", "definition": "코벌미비대"},
+            {"term": "Foreign Body in Nose", "definition": "코 이물"}
         ]
     },
     "비뇨기과": {
@@ -189,7 +247,13 @@ nested_terms = {
             {"term": "Glomerulonephritis", "definition": "사구체신염"},
             {"term": "Kidney Stone", "definition": "신장결석"},
             {"term": "Renal Cancer", "definition": "신장암"},
-            {"term": "Polycystic Kidney", "definition": "다낭성신장"}
+            {"term": "Polycystic Kidney", "definition": "다낭성신장"},
+            # 추가 5개
+            {"term": "Nephroblastoma", "definition": "신아세포종(윌름스 종양)"},
+            {"term": "Renal Artery Stenosis", "definition": "신동맥협착증"},
+            {"term": "Renal Colic", "definition": "신산통"},
+            {"term": "Renal Hypertension", "definition": "신성고혈압"},
+            {"term": "Renal Osteodystrophy", "definition": "신성골이영양증"}
         ],
         "방광": [
             {"term": "Cystitis", "definition": "방광염"},
@@ -201,16 +265,28 @@ nested_terms = {
             {"term": "Urethritis", "definition": "요도염"},
             {"term": "Urinary Tract Infection", "definition": "요로감염"},
             {"term": "Bladder Stone", "definition": "방광결석"},
-            {"term": "Interstitial Cystitis", "definition": "간질성방광염"}
+            {"term": "Interstitial Cystitis", "definition": "간질성방광염"},
+            # 추가 5개
+            {"term": "Bladder Neck Obstruction", "definition": "방광경부폐색"},
+            {"term": "Bladder Fistula", "definition": "방광루"},
+            {"term": "Bladder Diverticulum", "definition": "방광게실"},
+            {"term": "Dysuria", "definition": "배뇨통"},
+            {"term": "Benign Prostatic Hyperplasia", "definition": "양성 전립선 비대증(비뇨기과적 문제)"}
         ]
     }
 }
 
 # 중첩된 딕셔너리를 단일 리스트로 변환
-medical_terms = []
-for category in nested_terms.values():
-    for subcategory in category.values():
-        medical_terms.extend(subcategory)
+def flatten_terms(nested_dict):
+    flat_list = []
+    for val in nested_dict.values():
+        if isinstance(val, dict):
+            flat_list.extend(flatten_terms(val))
+        elif isinstance(val, list):
+            flat_list.extend(val)
+    return flat_list
+
+medical_terms = flatten_terms(nested_terms)
 
 # 세션 상태 초기화
 if 'completed_terms' not in st.session_state:
@@ -244,7 +320,7 @@ if selected == list(menu_options.keys())[0]:  # "오늘의 학습"
     with col1:
         selected_date = st.date_input("학습 날짜 선택", datetime.now())
     
-    # 진행률 표시
+    # 전체 진행률 표시
     progress = len(st.session_state.all_time_completed) / len(medical_terms)
     st.progress(progress)
     st.write(f"전체 진행률: {progress*100:.1f}% ({len(st.session_state.all_time_completed)}/{len(medical_terms)})")
@@ -253,6 +329,7 @@ if selected == list(menu_options.keys())[0]:  # "오늘의 학습"
     random.seed(int(selected_date.strftime("%Y%m%d")))
     remaining_terms = [term for term in medical_terms 
                       if term not in st.session_state.all_time_completed]
+    # 남은 용어가 6개 미만이면 전체에서 다시 뽑도록 처리
     today_terms = random.sample(remaining_terms if len(remaining_terms) >= 6 else medical_terms, 6)
 
     # 용어 카드 표시
@@ -303,8 +380,11 @@ elif selected == list(menu_options.keys())[1]:  # "통계"
     st.subheader("전체 진행 현황")
     total_progress = len(st.session_state.all_time_completed)
     total_terms = len(medical_terms)
-    st.metric("학습한 용어 수", f"{total_progress}/{total_terms}", 
-              f"{(total_progress/total_terms*100):.1f}%")
+    st.metric(
+        "학습한 용어 수",
+        f"{total_progress}/{total_terms}",
+        f"{(total_progress/total_terms*100):.1f}%"
+    )
 
 # 상품 시스템 페이지
 elif selected == list(menu_options.keys())[2]:  # "상품 시스템"
